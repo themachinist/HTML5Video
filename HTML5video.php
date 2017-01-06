@@ -50,13 +50,13 @@ function html5videorender( $input, $args) {
 	global $wgScriptPath;
 	
 	$videosource = array();
-    $videosource['youtube' ] = 'http://www.youtube.com/v/' . $input;
-    $videosource['HTML5'   ] = $input;
+  $videosource['youtube' ] = 'http://www.youtube.com/v/' . $input;
+  $videosource['HTML5'   ] = $input;
 	
 	$input_array = explode('|', htmlspecialchars($input));
-    $movie     = current($input_array);
-    $width  = isset($args['width']) ? $args['width'] : '320';
-    $height = isset($args['height']) ? $args['height'] : '240';
+  $movie     = current($input_array);
+  $width  = isset($args['width']) ? $args['width'] : '320';
+  $height = isset($args['height']) ? $args['height'] : '240';
 	$type   = isset($args['type'],$videosource[$args['type']]) ? $args['type'] : 'HTML5';
 	
 	
@@ -67,9 +67,9 @@ function html5videorender( $input, $args) {
 		$autoplay = ($args['autoplay'] == 'true') ? 'autoplay' : ' ';
 		
     	$output = '<video width="' . $width . '" height="' . $height . '" autobuffer controls ' . $autoplay . '   preload="auto" >' . 
-                  '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $input . '.mp4" type="video/mp4" />' .     /* Safari / iOS video */
-			      '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $input . '.ogv" type="video/ogg" />' .     /* Firefox, Opera, Chrome */
-				  '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $input . '.webm" type="video/webm" />' .     /* New Open Standard */
+                  '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.mp4" type="video/mp4" />' .     /* Safari / iOS video */
+			      '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.ogv" type="video/ogg" />' .     /* Firefox, Opera, Chrome */
+				  '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.webm" type="video/webm" />' .     /* New Open Standard */
 				  '</video>';            
     	return  $output ;
 		}
@@ -78,14 +78,14 @@ function html5videorender( $input, $args) {
 			$autoplay = ($args['autoplay'] == 'true') ? 'autoplay' : ' ';
 		
     		$output = '<video width="' . $width . '" autobuffer controls ' . $autoplay . '   preload="auto" >' . 
-                  '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $input . '.mp4" type="video/mp4" />' .     /* Safari / iOS video */
-			      '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $input . '.ogv" type="video/ogg" />' .     /* Firefox, Opera, Chrome */
-				  '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $input . '.webm" type="video/webm" />' .     /* New Open Standard */
+                  '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.mp4" type="video/mp4" />' .     /* Safari / iOS video */
+			      '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.ogv" type="video/ogg" />' .     /* Firefox, Opera, Chrome */
+				  '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.webm" type="video/webm" />' .     /* New Open Standard */
 				  '</video>';            
       
 		
-			$output .=  '<p><a href="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $input . '.mp4" >Download .mp4 Video</a></p>';
-			$output .=  '<p><a href="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $input . '.ogv" >Download .ogv Video</a></p>';
+			$output .=  '<p><a href="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.mp4" >Download .mp4 Video</a></p>';
+			$output .=  '<p><a href="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.ogv" >Download .ogv Video</a></p>';
 			$output .=  "Input value is " . $input . ", ";
 			$output .=  "Movie value is " . $movie . ", ";
 			$output .=  "Autoplay value is " . $autoplay . ", ";
