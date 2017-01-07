@@ -59,7 +59,10 @@ function html5videorender( $input, $args) {
   $width  = isset($args['width']) ? $args['width'] : '320';
   $height = isset($args['height']) ? $args['height'] : '240';
 	$type   = isset($args['type'],$videosource[$args['type']]) ? $args['type'] : 'HTML5';
-	
+
+	$show_link = isset($args['link'] ) ? $args['link'] : '0';
+	$show_info= isset($args['debug'] ) ? $args['debug'] : '0';
+	$url = isset($args['url']) ? $args['url'] : ''; # not yet implemented
 	
 	if( strtolower($type) == 'html5')
   {
@@ -83,15 +86,20 @@ function html5videorender( $input, $args) {
     			$source .
     			'</video>';
     	
+    if ( $show_link)
+    {
 		$output .=  '<p><a href="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.mp4" >Download .mp4 Video</a></p>';
 		$output .=  '<p><a href="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.ogv" >Download .ogv Video</a></p>';
+    }
+    if ( $show_info)
+    {
 		$output .=  "Input value is " . $input . ", ";
 		$output .=  "Movie value is " . $movie . ", ";
 		$output .=  "Autoplay value is " . $autoplay . ", ";
 		$output .=  "Width value is " . $width . ", ";
 		$output .=  "Height value is " . $height . ", ";
 		$output .=  "Type value is " . $type . ", ";
-		
+    }
     return  $output ;
 	} // HTML 5
 	elseif( strtolower($type) == 'youtube')
