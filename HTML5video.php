@@ -62,38 +62,37 @@ function html5videorender( $input, $args) {
 	
 	
 	if( strtolower($type) == 'html5')
+  {
+  	$autoplay = (isset($args['autoplay']) &&  $args['autoplay'] == 'true') ? 'autoplay' : ' ';
+    if (is_numeric($width))
     {
-
-    	$autoplay = (isset($args['autoplay']) &&  $args['autoplay'] == 'true') ? 'autoplay' : ' ';
-    	if (is_numeric($width))
-    	{
     		$size = ' width="' . $width . '" height="' . $height . '" ';
-    	}
-    	else
-    	{
-    		$size = ' width="' . $width . '" ';
-    	}
+    }
+    else
+    {
+   		$size = ' width="' . $width . '" ';
+    }
 
-    	$source =
+    $source =
     	'<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.mp4" type="video/mp4" />' .     /* Safari / iOS video */
     	'<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.ogv" type="video/ogg" />' .     /* Firefox, Opera, Chrome */
     	'<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.webm" type="video/webm" />'     /* New Open Standard */
     	;
 
-    	$output = '<video ' . $size . ' autobuffer controls ' . $autoplay . '   preload="auto" >' .
+    $output = '<video ' . $size . ' autobuffer controls ' . $autoplay . '   preload="auto" >' .
     			$source .
     			'</video>';
     	
-			$output .=  '<p><a href="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.mp4" >Download .mp4 Video</a></p>';
-			$output .=  '<p><a href="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.ogv" >Download .ogv Video</a></p>';
-			$output .=  "Input value is " . $input . ", ";
-			$output .=  "Movie value is " . $movie . ", ";
-			$output .=  "Autoplay value is " . $autoplay . ", ";
-			$output .=  "Width value is " . $width . ", ";
-			$output .=  "Height value is " . $height . ", ";
-			$output .=  "Type value is " . $type . ", ";
+		$output .=  '<p><a href="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.mp4" >Download .mp4 Video</a></p>';
+		$output .=  '<p><a href="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.ogv" >Download .ogv Video</a></p>';
+		$output .=  "Input value is " . $input . ", ";
+		$output .=  "Movie value is " . $movie . ", ";
+		$output .=  "Autoplay value is " . $autoplay . ", ";
+		$output .=  "Width value is " . $width . ", ";
+		$output .=  "Height value is " . $height . ", ";
+		$output .=  "Type value is " . $type . ", ";
 		
-    	return  $output ;
+    return  $output ;
 	} // HTML 5
 	elseif( strtolower($type) == 'youtube')
 	{
