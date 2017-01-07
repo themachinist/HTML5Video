@@ -11,6 +11,9 @@
  *  - Set width and height option
  *  - Autoplay option
  * 
+ * variable:  $wgHTML5VideoPath
+ *     alternate path to local videos
+ *     
  * Copyright (c) 2011 William S. Howard
  *
  * Special thanks to website: http://camendesign.com/code/video_for_everybody
@@ -48,54 +51,82 @@ function html5videoinit( $parser ) {
 
 function html5videorender( $input, $args) {
 	global $wgScriptPath;
+	global $wgHTML5VideoPath;
 	
 	$videosource = array();
-    $videosource['youtube' ] = 'http://www.youtube.com/v/' . $input;
-    $videosource['HTML5'   ] = $input;
+  $videosource['youtube' ] = 'http://www.youtube.com/v/' . $input;
+  $videosource['HTML5'   ] = $input;
 	
 	$input_array = explode('|', htmlspecialchars($input));
-    $movie     = current($input_array);
-    $width  = isset($args['width']) ? $args['width'] : '320';
-    $height = isset($args['height']) ? $args['height'] : '240';
+  $movie     = current($input_array);
+	$caption = next($input_array);
+  $width  = isset($args['width']) ? $args['width'] : '320';
+  $height = isset($args['height']) ? $args['height'] : '240';
 	$type   = isset($args['type'],$videosource[$args['type']]) ? $args['type'] : 'HTML5';
-	
+
+	$show_link = isset($args['link'] ) ? $args['link'] : '0';
+	$show_info= isset($args['debug'] ) ? $args['debug'] : '0';
+	$url = isset($args['url']) ? $args['url'] : ''; # not yet implemented
 	
 	if( strtolower($type) == 'html5')
+  {
+  	$video_path = $wgScriptPath . '/extensions/HTML5video/videos/';
+  	if ( isset($wgHTML5VideoPath)) {
+  		$video_path = $wgHTML5VideoPath;
+  	}
+  	$autoplay = (isset($args['autoplay']) &&  $args['autoplay'] == 'true') ? 'autoplay' : ' ';
+    if (is_numeric($width))
     {
-		if (is_numeric($width))
-		{
-		$autoplay = ($args['autoplay'] == 'true') ? 'autoplay' : ' ';
-		
-    	$output = '<video width="' . $width . '" height="' . $height . '" autobuffer controls ' . $autoplay . '   preload="auto" >' . 
-                  '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $input . '.mp4" type="video/mp4" />' .     /* Safari / iOS video */
-			      '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $input . '.ogv" type="video/ogg" />' .     /* Firefox, Opera, Chrome */
-				  '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $input . '.webm" type="video/webm" />' .     /* New Open Standard */
-				  '</video>';            
-    	return  $output ;
-		}
-		else
-		{
-			$autoplay = ($args['autoplay'] == 'true') ? 'autoplay' : ' ';
-		
-    		$output = '<video width="' . $width . '" autobuffer controls ' . $autoplay . '   preload="auto" >' . 
-                  '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $input . '.mp4" type="video/mp4" />' .     /* Safari / iOS video */
-			      '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $input . '.ogv" type="video/ogg" />' .     /* Firefox, Opera, Chrome */
-				  '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $input . '.webm" type="video/webm" />' .     /* New Open Standard */
-				  '</video>';            
-      
-		
-			$output .=  '<p><a href="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $input . '.mp4" >Download .mp4 Video</a></p>';
-			$output .=  '<p><a href="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $input . '.ogv" >Download .ogv Video</a></p>';
-			$output .=  "Input value is " . $input . ", ";
-			$output .=  "Movie value is " . $movie . ", ";
-			$output .=  "Autoplay value is " . $autoplay . ", ";
-			$output .=  "Width value is " . $width . ", ";
-			$output .=  "Height value is " . $height . ", ";
-			$output .=  "Type value is " . $type . ", ";
-		
-    	return  $output ;
-		}
-	}
+    		$size = ' width="' . $width . '" height="' . $height . '" ';
+    }
+    else
+    {
+   		$size = ' width="' . $width . '" ';
+    }
+
+    if ($url) {
+    	// ASSUME MP4
+    	// TODO: remove restriction
+    	$source = '<source src="' . $url . '" type="video/mp4" />';     /* Safari / iOS video */
+    	$caption = $movie;
+    }
+    else
+    {
+    $source =
+    	'<source src="' . $video_path . $movie . '.mp4" type="video/mp4" />' .     /* Safari / iOS video */
+    	'<source src="' . $video_path . $movie . '.ogv" type="video/ogg" />' .     /* Firefox, Opera, Chrome */
+    	'<source src="' . $video_path . $movie . '.webm" type="video/webm" />'     /* New Open Standard */
+    	;
+    }
+    
+    $output = '<video ' . $size . ' autobuffer controls ' . $autoplay . '   preload="auto" >' .
+    			$source .
+    			'</video>';
+    	
+    if ( $caption) {
+    	// TODO: add CSS for formatting
+    	$output .= "<p>$caption </p>";
+    }
+    if ( $show_link)
+    {
+		$output .=  '<p><a href="' . $video_path . $movie . '.mp4" >Download .mp4 Video</a></p>';
+		$output .=  '<p><a href="' . $video_path . $movie . '.ogv" >Download .ogv Video</a></p>';
+		$output .=  '<p><a href="' . $video_path . $movie . '.webm" >Download .webm Video</a></p>';
+    }
+    if ( $show_info)
+    {
+		$output .=  "Input value is " . $input . ", ";
+		$output .=  "Movie value is " . $movie . ", ";
+		$output .=  "Autoplay value is " . $autoplay . ", ";
+		$output .=  "Width value is " . $width . ", ";
+		$output .=  "Height value is " . $height . ", ";
+		$output .=  "Type value is " . $type . ", ";
+			$output .=  "size value is " . $size . ", ";
+			$output .=  "url value is " . $url . ", ";
+		$output .=  "video path  value is " . $video_path . ", ";
+    }
+    return  $output ;
+	} // HTML 5
 	elseif( strtolower($type) == 'youtube')
 	{
 			$autoplay = ($args['autoplay'] == 'true') ? '1' : '0';
