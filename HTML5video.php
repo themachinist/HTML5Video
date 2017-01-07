@@ -55,6 +55,7 @@ function html5videorender( $input, $args) {
 	
 	$input_array = explode('|', htmlspecialchars($input));
   $movie     = current($input_array);
+	$caption = next($input_array);
   $width  = isset($args['width']) ? $args['width'] : '320';
   $height = isset($args['height']) ? $args['height'] : '240';
 	$type   = isset($args['type'],$videosource[$args['type']]) ? $args['type'] : 'HTML5';
@@ -62,28 +63,27 @@ function html5videorender( $input, $args) {
 	
 	if( strtolower($type) == 'html5')
     {
-		if (is_numeric($width))
-		{
-		$autoplay = ($args['autoplay'] == 'true') ? 'autoplay' : ' ';
-		
-    	$output = '<video width="' . $width . '" height="' . $height . '" autobuffer controls ' . $autoplay . '   preload="auto" >' . 
-                  '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.mp4" type="video/mp4" />' .     /* Safari / iOS video */
-			      '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.ogv" type="video/ogg" />' .     /* Firefox, Opera, Chrome */
-				  '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.webm" type="video/webm" />' .     /* New Open Standard */
-				  '</video>';            
-    	return  $output ;
-		}
-		else
-		{
-			$autoplay = ($args['autoplay'] == 'true') ? 'autoplay' : ' ';
-		
-    		$output = '<video width="' . $width . '" autobuffer controls ' . $autoplay . '   preload="auto" >' . 
-                  '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.mp4" type="video/mp4" />' .     /* Safari / iOS video */
-			      '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.ogv" type="video/ogg" />' .     /* Firefox, Opera, Chrome */
-				  '<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.webm" type="video/webm" />' .     /* New Open Standard */
-				  '</video>';            
-      
-		
+
+    	$autoplay = (isset($args['autoplay']) &&  $args['autoplay'] == 'true') ? 'autoplay' : ' ';
+    	if (is_numeric($width))
+    	{
+    		$size = ' width="' . $width . '" height="' . $height . '" ';
+    	}
+    	else
+    	{
+    		$size = ' width="' . $width . '" ';
+    	}
+
+    	$source =
+    	'<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.mp4" type="video/mp4" />' .     /* Safari / iOS video */
+    	'<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.ogv" type="video/ogg" />' .     /* Firefox, Opera, Chrome */
+    	'<source src="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.webm" type="video/webm" />'     /* New Open Standard */
+    	;
+
+    	$output = '<video ' . $size . ' autobuffer controls ' . $autoplay . '   preload="auto" >' .
+    			$source .
+    			'</video>';
+    	
 			$output .=  '<p><a href="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.mp4" >Download .mp4 Video</a></p>';
 			$output .=  '<p><a href="' . $wgScriptPath . '/extensions/HTML5video/videos/' . $movie . '.ogv" >Download .ogv Video</a></p>';
 			$output .=  "Input value is " . $input . ", ";
@@ -94,8 +94,7 @@ function html5videorender( $input, $args) {
 			$output .=  "Type value is " . $type . ", ";
 		
     	return  $output ;
-		}
-	}
+	} // HTML 5
 	elseif( strtolower($type) == 'youtube')
 	{
 			$autoplay = ($args['autoplay'] == 'true') ? '1' : '0';
