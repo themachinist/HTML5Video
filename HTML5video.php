@@ -11,7 +11,7 @@
  *  - Set width and height option
  *  - Autoplay option
  * 
- * variable:  $wgHTML5VideoPath;
+ * variable:  $wgHTML5VideoPath
  *     alternate path to local videos
  *     
  * Copyright (c) 2011 William S. Howard
@@ -84,12 +84,21 @@ function html5videorender( $input, $args) {
    		$size = ' width="' . $width . '" ';
     }
 
+    if ($url) {
+    	// ASSUME MP4
+    	// TODO: remove restriction
+    	$source = '<source src="' . $url . '" type="video/mp4" />';     /* Safari / iOS video */
+    	$caption = $movie;
+    }
+    else
+    {
     $source =
     	'<source src="' . $video_path . $movie . '.mp4" type="video/mp4" />' .     /* Safari / iOS video */
     	'<source src="' . $video_path . $movie . '.ogv" type="video/ogg" />' .     /* Firefox, Opera, Chrome */
     	'<source src="' . $video_path . $movie . '.webm" type="video/webm" />'     /* New Open Standard */
     	;
-
+    }
+    
     $output = '<video ' . $size . ' autobuffer controls ' . $autoplay . '   preload="auto" >' .
     			$source .
     			'</video>';
@@ -112,6 +121,8 @@ function html5videorender( $input, $args) {
 		$output .=  "Width value is " . $width . ", ";
 		$output .=  "Height value is " . $height . ", ";
 		$output .=  "Type value is " . $type . ", ";
+			$output .=  "size value is " . $size . ", ";
+			$output .=  "url value is " . $url . ", ";
 		$output .=  "video path  value is " . $video_path . ", ";
     }
     return  $output ;
